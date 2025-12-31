@@ -5,35 +5,18 @@ import com.scheduling.api.domain.dvo.Schedule;
 import com.scheduling.api.domain.enumerates.WeekDays;
 import com.scheduling.api.domain.exceptions.DomainException;
 import com.scheduling.api.infra.providers.ClockProvider;
+import com.scheduling.api.stubs.TestClockProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ServiceTest {
 
-    private static class FakeTimer implements ClockProvider {
-        @Override
-        public LocalDateTime now() {
-            return LocalDateTime.of(this.currentDate(), this.currentTime());
-        }
-
-        @Override
-        public LocalDate currentDate() {
-            return LocalDate.of(1999, 12, 12);
-        }
-
-        @Override
-        public LocalTime currentTime() {
-            return LocalTime.of(6, 0);
-        }
-    }
-
-    private static final FakeTimer CLOCK_PROVIDER = new FakeTimer();
+    private static final ClockProvider CLOCK_PROVIDER = TestClockProvider.INSTANCE;
     private static final DayHour NOW = new DayHour(CLOCK_PROVIDER.currentDate(), CLOCK_PROVIDER.currentTime());
 
     @Test

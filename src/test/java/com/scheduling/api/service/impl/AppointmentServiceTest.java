@@ -1,5 +1,6 @@
 package com.scheduling.api.service.impl;
 
+import com.scheduling.api.stubs.TestClockProvider;
 import com.scheduling.api.domain.Appointment;
 import com.scheduling.api.domain.Service;
 import com.scheduling.api.domain.dvo.DayHour;
@@ -15,9 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,6 +31,9 @@ class AppointmentServiceTest {
 
     @InjectMocks
     private AppointmentServiceImpl appointmentService;
+
+    private static final ClockProvider CLOCK_PROVIDER = TestClockProvider.INSTANCE;
+    private static final DayHour NOW = DayHour.now(CLOCK_PROVIDER);
 
     @Test
     @DisplayName("should confirm pending appointment")
@@ -61,30 +62,9 @@ class AppointmentServiceTest {
         verify(this.repository, never()).save(any(Appointment.class));
     }
 
-
-    private static class FakeTimer implements ClockProvider {
-        @Override
-        public LocalDateTime now() {
-            return LocalDateTime.of(this.currentDate(), this.currentTime());
-        }
-
-        @Override
-        public LocalDate currentDate() {
-            return LocalDate.of(1999, 12, 12);
-        }
-
-        @Override
-        public LocalTime currentTime() {
-            return LocalTime.of(6, 0);
-        }
-    }
-
-    private static final FakeTimer CLOCK_PROVIDER = new FakeTimer();
-    private static final DayHour NOW = new DayHour(CLOCK_PROVIDER.currentDate(), CLOCK_PROVIDER.currentTime());
-
     private Appointment createPendingAppointment() {
         return this.createService()
-                .schedule(DayHour.now(CLOCK_PROVIDER), DayHour.now(CLOCK_PROVIDER));
+                .schedule(NOW, NOW);
     }
 
     private Service createService() {
