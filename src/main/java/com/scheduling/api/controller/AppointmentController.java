@@ -28,4 +28,10 @@ public class AppointmentController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<Void> cancel(@PathVariable("id") Long id, @RequestBody Map<String, String> body) {
+        this.appointmentService.cancel(id, body.get("cancel-reason"));
+        return ResponseEntity.noContent().build();
+    }
+
 }

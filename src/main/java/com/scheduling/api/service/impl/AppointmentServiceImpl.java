@@ -27,6 +27,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         return this.appointmentRepository.save(appointment);
     }
 
+    @Override
+    public Appointment cancel(Long id, String cancelReason) {
+        Appointment appointment = this.getAppointment(id);
+        appointment.cancel(cancelReason);
+        return this.appointmentRepository.save(appointment);
+    }
+
     private Appointment getAppointment(Long id) {
         return this.appointmentRepository.findById(id)
                 .orElseThrow( () -> new NotFoundRecordException("appointment not found"));

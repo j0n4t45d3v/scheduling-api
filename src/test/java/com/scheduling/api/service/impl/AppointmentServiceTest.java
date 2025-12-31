@@ -89,6 +89,33 @@ class AppointmentServiceTest {
         verify(this.repository, never()).save(any(Appointment.class));
     }
 
+    @Test
+    @DisplayName("should cancel confirmed appointment")
+    void shouldCancelConfirmedAppointment() {
+        var appointment = this.createPendingAppointment();
+        appointment.confirm();
+
+        when(this.repository.findById(anyLong())).thenReturn(Optional.of(appointment));
+
+        this.appointmentService.cancel(1L, "Test reject");
+
+        assertTrue(appointment.isCanceled());
+
+        verify(this.repository, times(1)).findById(1L);
+        verify(this.repository, times(1)).save(same(appointment));
+    }
+
+    @Test
+    @DisplayName("should throw not found in cancel when appointment not exists")
+    void shouldThrowNotFoundInCancelWhenAppointmentNotExists() {
+        when(this.repository.findById(anyLong()))
+                .thenReturn(Optional.empty());
+
+        assertThrows(NotFoundRecordException.class, () -> this.appointmentService.cancel(1L, "Test reject"));
+
+        verify(this.repository, times(1)).findById(1L);
+        verify(this.repository, never()).save(any(Appointment.class));
+    }
 
     private Appointment createPendingAppointment() {
         return this.createService()

@@ -8,4 +8,6 @@ public interface AppointmentService {
 
     Appointment reject(Long id, String rejectReason);
 
+    Appointment cancel(Long id, String cancelReason);
+
 }

@@ -94,4 +94,41 @@ class AppointmentControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    @DisplayName("should return 204 when cancel a valid appointment")
+    void shouldReturn204WhenCancelAValidAppointment() throws Exception {
+        this.mockMvc.perform(
+                put("/appointments/{id}/cancel", 1)
+                        .contentType("application/json")
+                        .content("{\"cancel-reason\": \"test reason message\"}")
+        ).andExpect(status().isNoContent());
+
+        verify(this.appointmentService).cancel(1L, "test reason message");
+    }
+
+    @Test
+    @DisplayName("should return 404 when not found cancel appointment provided")
+    void shouldReturn404WhenNotFoundCancelAppointmentProvided() throws Exception {
+        doThrow(new NotFoundRecordException("fail"))
+                .when(this.appointmentService)
+                .cancel(anyLong(), anyString());
+
+        this.mockMvc.perform(
+                put("/appointments/{id}/cancel", 1)
+                        .contentType("application/json")
+                        .content("{\"cancel-reason\": \"test reason message\"}")
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("should return 400 when cancel appointment violate domain rules")
+    void shouldReturn400WhenCancelAppointmentViolateDomainRules() throws Exception {
+        doThrow(DomainException.class)
+                .when(this.appointmentService)
+                .cancel(anyLong(), anyString());
+
+        this.mockMvc.perform(put("/appointments/{id}/cancel", 1))
+                .andExpect(status().isBadRequest());
+    }
+
 }
