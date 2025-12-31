@@ -23,7 +23,7 @@ public class Appointment {
     private String reason;
     private final Service service;
 
-    public Appointment(DayHour dayHour, Service service) {
+    protected Appointment(DayHour dayHour, Service service) {
         this.dayHour = dayHour;
         this.status = Status.PENDING;
         this.reason = null;
