@@ -3,6 +3,7 @@ package com.scheduling.api.domain;
 import com.scheduling.api.domain.dvo.DayHour;
 import com.scheduling.api.domain.dvo.Schedule;
 import com.scheduling.api.domain.exceptions.appointment.AppointmentCannotBeCanceledException;
+import com.scheduling.api.domain.exceptions.appointment.AppointmentIsNotConfirmedException;
 import com.scheduling.api.domain.exceptions.appointment.AppointmentCannotBeConfirmedException;
 import com.scheduling.api.domain.exceptions.appointment.AppointmentCannotBeRejectedException;
 import com.scheduling.api.domain.exceptions.appointment.AppointmentReasonIsRequiredException;
@@ -53,7 +54,7 @@ class AppointmentTest {
     @DisplayName("should not cancel appointment when it is not confirmed")
     void shouldNotBeCanceledWhenAppointmentIsNotConfirmed() {
         var appointment = this.createValidAppointment();
-        assertThrows(AppointmentCannotBeCanceledException.class, () -> appointment.cancel(null));
+        assertThrows(AppointmentIsNotConfirmedException.class, () -> appointment.cancel(null));
     }
 
     @Test

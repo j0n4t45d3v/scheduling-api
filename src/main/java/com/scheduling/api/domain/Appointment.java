@@ -1,7 +1,7 @@
 package com.scheduling.api.domain;
 
 import com.scheduling.api.domain.dvo.DayHour;
-import com.scheduling.api.domain.exceptions.appointment.AppointmentCannotBeCanceledException;
+import com.scheduling.api.domain.exceptions.appointment.AppointmentIsNotConfirmedException;
 import com.scheduling.api.domain.exceptions.appointment.AppointmentCannotBeConfirmedException;
 import com.scheduling.api.domain.exceptions.appointment.AppointmentCannotBeRejectedException;
 import com.scheduling.api.domain.exceptions.appointment.AppointmentReasonIsRequiredException;
@@ -39,7 +39,7 @@ public class Appointment {
 
     public void cancel(String reason) {
         if (!this.isConfirmed()) {
-            throw new AppointmentCannotBeCanceledException();
+            throw new AppointmentIsNotConfirmedException();
         }
         this.reason = reason;
         this.status = Status.CANCELED;
