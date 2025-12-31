@@ -91,7 +91,10 @@ class AppointmentTest {
 
     private Service createService() {
         return Service.builder()
+                .setName("Test")
+                .setDescription("Test description")
                 .addSchedule(new Schedule(LocalTime.now(ZoneId.of("UTC"))))
+                .addWorkDay(WeekDays.SUNDAY)
                 .build();
     }
 
