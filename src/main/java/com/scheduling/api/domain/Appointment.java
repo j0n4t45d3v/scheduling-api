@@ -68,7 +68,7 @@ public class Appointment {
         return this.status.equals(Status.CANCELED);
     }
 
-    public boolean isReject() {
+    public boolean isRejected() {
         return this.status.equals(Status.REJECTED);
     }
 

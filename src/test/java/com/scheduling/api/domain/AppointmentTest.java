@@ -62,7 +62,7 @@ class AppointmentTest {
     void shouldAllowRejectingAppointmentWhenItIsPending() {
         var appointment = this.createValidAppointment();
         appointment.reject("test reject");
-        assertTrue(appointment.isReject());
+        assertTrue(appointment.isRejected());
     }
 
     @Test
