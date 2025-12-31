@@ -14,24 +14,24 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public Appointment confirm(Long id) {
+    public void confirm(Long id) {
         Appointment appointment = this.getAppointment(id);
         appointment.confirm();
-        return this.appointmentRepository.save(appointment);
+        this.appointmentRepository.save(appointment);
     }
 
     @Override
-    public Appointment reject(Long id, String rejectReason) {
+    public void reject(Long id, String rejectReason) {
         Appointment appointment = this.getAppointment(id);
         appointment.reject(rejectReason);
-        return this.appointmentRepository.save(appointment);
+        this.appointmentRepository.save(appointment);
     }
 
     @Override
-    public Appointment cancel(Long id, String cancelReason) {
+    public void cancel(Long id, String cancelReason) {
         Appointment appointment = this.getAppointment(id);
         appointment.cancel(cancelReason);
-        return this.appointmentRepository.save(appointment);
+        this.appointmentRepository.save(appointment);
     }
 
     private Appointment getAppointment(Long id) {
