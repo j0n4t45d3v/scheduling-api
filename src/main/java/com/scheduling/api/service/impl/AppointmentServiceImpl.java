@@ -20,4 +20,12 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointmentFound.confirm();
         return this.appointmentRepository.save(appointmentFound);
     }
+
+    @Override
+    public Appointment reject(Long id, String rejectReason) {
+        Appointment appointmentFound = this.appointmentRepository.findById(id)
+                .orElseThrow( () -> new NotFoundRecordException("appointment not found"));
+        appointmentFound.reject(rejectReason);
+        return this.appointmentRepository.save(appointmentFound);
+    }
 }

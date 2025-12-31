@@ -62,6 +62,34 @@ class AppointmentServiceTest {
         verify(this.repository, never()).save(any(Appointment.class));
     }
 
+    @Test
+    @DisplayName("should reject pending appointment")
+    void shouldRejectPendingAppointment() {
+        var appointment = this.createPendingAppointment();
+
+        when(this.repository.findById(anyLong())).thenReturn(Optional.of(appointment));
+
+        this.appointmentService.reject(1L, "Test reject");
+
+        assertTrue(appointment.isRejected());
+
+        verify(this.repository, times(1)).findById(1L);
+        verify(this.repository, times(1)).save(same(appointment));
+    }
+
+    @Test
+    @DisplayName("should throw not found in reject when appointment not exists")
+    void shouldThrowNotFoundInRejectWhenAppointmentNotExists() {
+        when(this.repository.findById(anyLong()))
+                .thenReturn(Optional.empty());
+
+        assertThrows(NotFoundRecordException.class, () -> this.appointmentService.reject(1L, "Test reject"));
+
+        verify(this.repository, times(1)).findById(1L);
+        verify(this.repository, never()).save(any(Appointment.class));
+    }
+
+
     private Appointment createPendingAppointment() {
         return this.createService()
                 .schedule(NOW, NOW);

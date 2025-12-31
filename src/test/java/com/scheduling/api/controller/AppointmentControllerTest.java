@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
 import static org.mockito.ArgumentMatchers.anyLong;
 
 import static org.mockito.Mockito.*;
@@ -56,5 +57,41 @@ class AppointmentControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    @DisplayName("should return 204 when reject valid appointment")
+    void shouldReturn204WhenRejectValidAppointment() throws Exception {
+        this.mockMvc.perform(
+                put("/appointments/{id}/reject", 1)
+                        .contentType("application/json")
+                        .content("{\"reject-reason\": \"test reason message\"}")
+        ).andExpect(status().isNoContent());
+
+        verify(this.appointmentService).reject(1L, "test reason message");
+    }
+
+    @Test
+    @DisplayName("should return 404 when not found reject appointment provided")
+    void shouldReturn404WhenNotFoundRejectAppointmentProvided() throws Exception {
+        doThrow(new NotFoundRecordException("fail"))
+                .when(this.appointmentService)
+                .reject(anyLong(), anyString());
+
+        this.mockMvc.perform(
+                put("/appointments/{id}/reject", 1)
+                        .contentType("application/json")
+                        .content("{\"reject-reason\": \"test reason message\"}")
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("should return 400 when reject appointment violate domain rules")
+    void shouldReturn400WhenRejectAppointmentViolateDomainRules() throws Exception {
+        doThrow(DomainException.class)
+                .when(this.appointmentService)
+                .reject(anyLong(), anyString());
+
+        this.mockMvc.perform(put("/appointments/{id}/reject", 1))
+                .andExpect(status().isBadRequest());
+    }
 
 }
