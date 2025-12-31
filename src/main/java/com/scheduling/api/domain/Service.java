@@ -1,9 +1,10 @@
 package com.scheduling.api.domain;
 
+import com.scheduling.api.domain.dvo.DayHour;
 import com.scheduling.api.domain.dvo.Schedule;
+import com.scheduling.api.domain.enumerates.WeekDays;
 import com.scheduling.api.domain.exceptions.DomainException;
 
-import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,27 +12,32 @@ public class Service {
 
     private String name;
     private String description;
-    private LocalTime duranteService;
+    private Set<ServiceWorkDay> workDays;
     private Set<ServiceSchedules> schedules;
-
-    public Service() {
-        this(null, null, null, new HashSet<>());
-    }
 
     public Service(
             String name,
             String description,
-            LocalTime duranteService,
+            Set<ServiceWorkDay> workDays,
             Set<ServiceSchedules> schedules
     ) {
+        if (name == null || name.isBlank()) {
+            throw new DomainException("name is required");
+        }
+        if (description == null || description.isBlank()) {
+            throw new DomainException("description is required");
+        }
+        if (workDays == null || workDays.isEmpty()) {
+            throw new DomainException("provider one work day to service");
+        }
+        if (schedules == null || schedules.isEmpty()) {
+            throw new DomainException("provider one schedule to service");
+        }
+
         this.name = name;
         this.description = description;
-        this.duranteService = duranteService;
-        this.schedules = schedules;
-
-        if (this.schedules == null || this.schedules.isEmpty()) {
-            throw new DomainException("Provider one time range to opening hour");
-        }
+        this.workDays = Set.copyOf(workDays);
+        this.schedules = Set.copyOf(schedules);
     }
 
 
@@ -39,18 +45,45 @@ public class Service {
         return new ServiceBuilder();
     }
 
+    public Appointment schedule(DayHour appointment, DayHour now) {
+        if (appointment.isBefore(now)) {
+            throw new DomainException("Cannot make an appointment in the past");
+        }
+
+        if (this.isNotAvailableForTheDayOfWeek(appointment)) {
+            throw new DomainException("service is not available on " + appointment.getDayOfWeek().name());
+        }
+
+        if (this.isNotAvailableForSchedule(appointment)) {
+            throw new DomainException("service is not available for the given schedule");
+        }
+
+        return new Appointment(appointment, this);
+    }
+
+    private boolean isNotAvailableForTheDayOfWeek(DayHour appointment) {
+        return this.workDays
+                .stream()
+                .noneMatch(serviceWorkDay -> serviceWorkDay.isAvailable(appointment));
+    }
+
+    private boolean isNotAvailableForSchedule(DayHour appointment) {
+        return this.schedules
+                .stream()
+                .noneMatch(schedules -> schedules.isAvailable(appointment.hour()));
+    }
 
     public static class ServiceBuilder {
 
         private String name;
         private String description;
-        private LocalTime duranteService;
+        private final Set<ServiceWorkDay> weekDaysWork;
         private final Set<ServiceSchedules> schedulesOfService;
 
         public ServiceBuilder() {
             this.name = null;
             this.description = null;
-            this.duranteService = null;
+            this.weekDaysWork =  new HashSet<>();
             this.schedulesOfService = new HashSet<>();
         }
 
@@ -64,18 +97,18 @@ public class Service {
             return this;
         }
 
-        public ServiceBuilder setDuranteService(LocalTime duranteService) {
-            this.duranteService = duranteService;
-            return this;
-        }
-
         public ServiceBuilder addSchedule(Schedule time) {
             this.schedulesOfService.add(new ServiceSchedules(time));
             return this;
         }
 
+        public ServiceBuilder addWorkDay(WeekDays weekDays) {
+            this.weekDaysWork.add(new ServiceWorkDay(weekDays));
+            return this;
+        }
+
         public Service build() {
-            return new Service(this.name, this.description, this.duranteService, this.schedulesOfService);
+            return new Service(this.name, this.description, this.weekDaysWork, this.schedulesOfService);
         }
     }
 

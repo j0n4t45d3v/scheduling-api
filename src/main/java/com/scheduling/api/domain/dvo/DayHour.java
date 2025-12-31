@@ -1,5 +1,7 @@
 package com.scheduling.api.domain.dvo;
 
+import com.scheduling.api.domain.enumerates.WeekDays;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.chrono.ChronoLocalDate;
@@ -13,7 +15,7 @@ public record DayHour(LocalDate day, LocalTime hour) {
     }
 
     public boolean isBefore(DayHour other) {
-        return this.dayIsBefore(other) && this.hourIsBefore(other);
+        return this.dayIsBefore(other) || this.hourIsBefore(other);
     }
 
     public boolean dayIsBefore(DayHour other) {
@@ -27,6 +29,10 @@ public record DayHour(LocalDate day, LocalTime hour) {
     public boolean isEqualsTo(DayHour dayHour) {
         return this.day.isEqual(ChronoLocalDate.from(dayHour.day()))
                 && this.hour.equals(dayHour.hour());
+    }
+
+    public WeekDays getDayOfWeek() {
+        return WeekDays.of(this.day.getDayOfWeek());
     }
 
 }

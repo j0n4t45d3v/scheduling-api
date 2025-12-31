@@ -2,6 +2,7 @@ package com.scheduling.api.domain;
 
 import com.scheduling.api.domain.dvo.Schedule;
 
+import java.time.LocalTime;
 import java.util.Set;
 
 public class ServiceSchedules {
@@ -11,4 +12,9 @@ public class ServiceSchedules {
     public ServiceSchedules(Schedule schedule) {
         this.schedule = schedule;
     }
+
+    public boolean isAvailable(LocalTime time) {
+        return this.schedule.isEquals(time);
+    }
+
 }
