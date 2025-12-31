@@ -30,9 +30,5 @@ public class AppointmentServiceImpl implements AppointmentService {
     private Appointment getAppointment(Long id) {
         return this.appointmentRepository.findById(id)
                 .orElseThrow( () -> new NotFoundRecordException("appointment not found"));
-
-    @Override
-    public Appointment cancel(Long id, String cancelReason) {
-        return null;
     }
 }
