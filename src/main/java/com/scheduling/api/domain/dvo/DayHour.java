@@ -1,6 +1,7 @@
 package com.scheduling.api.domain.dvo;
 
 import com.scheduling.api.domain.enumerates.WeekDays;
+import com.scheduling.api.infra.providers.ClockProvider;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -12,6 +13,10 @@ public record DayHour(LocalDate day, LocalTime hour) {
         if (day == null|| hour == null) {
             throw new RuntimeException("not provider day/hour");
         }
+    }
+
+    public static DayHour now(ClockProvider provider) {
+        return new DayHour(provider.currentDate(), provider.currentTime());
     }
 
     public boolean isBefore(DayHour other) {
