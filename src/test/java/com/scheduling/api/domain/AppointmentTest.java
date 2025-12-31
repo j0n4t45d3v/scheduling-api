@@ -2,7 +2,7 @@ package com.scheduling.api.domain;
 
 import com.scheduling.api.domain.dvo.DayHour;
 import com.scheduling.api.domain.dvo.Schedule;
-import com.scheduling.api.domain.exceptions.appointment.AppointmentCannotBeCanceledException;
+import com.scheduling.api.domain.enumerates.WeekDays;
 import com.scheduling.api.domain.exceptions.appointment.AppointmentIsNotConfirmedException;
 import com.scheduling.api.domain.exceptions.appointment.AppointmentCannotBeConfirmedException;
 import com.scheduling.api.domain.exceptions.appointment.AppointmentCannotBeRejectedException;
