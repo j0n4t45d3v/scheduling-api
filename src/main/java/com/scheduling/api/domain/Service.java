@@ -4,16 +4,24 @@ import com.scheduling.api.domain.dvo.DayHour;
 import com.scheduling.api.domain.dvo.Schedule;
 import com.scheduling.api.domain.enumerates.WeekDays;
 import com.scheduling.api.domain.exceptions.DomainException;
+import jakarta.persistence.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@Entity
+@Table(name="tb_services")
 public class Service {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String name;
     private String description;
-    private Set<ServiceWorkDay> workDays;
-    private Set<ServiceSchedules> schedules;
+    @OneToMany(mappedBy = "service", cascade = CascadeType.REMOVE)
+    private final Set<ServiceWorkDay> workDays;
+    @OneToMany(mappedBy = "service", cascade = CascadeType.REMOVE)
+    private final Set<ServiceSchedules> schedules;
 
     public Service(
             String name,

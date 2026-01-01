@@ -5,9 +5,12 @@ import com.scheduling.api.domain.exceptions.appointment.AppointmentIsNotConfirme
 import com.scheduling.api.domain.exceptions.appointment.AppointmentCannotBeConfirmedException;
 import com.scheduling.api.domain.exceptions.appointment.AppointmentCannotBeRejectedException;
 import com.scheduling.api.domain.exceptions.appointment.AppointmentReasonIsRequiredException;
+import jakarta.persistence.*;
 
 import java.util.Optional;
 
+@Entity
+@Table(name="tb_appointments")
 public class Appointment {
 
     public enum Status {
@@ -17,10 +20,20 @@ public class Appointment {
         CANCELED;
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "day", column = @Column(name = "day_schedule")),
+            @AttributeOverride(name = "hour", column = @Column(name = "hour_schedule")),
+    })
     private final DayHour dayHour;
+    @Enumerated(EnumType.STRING)
     private Status status;
     private String reason;
+    @ManyToOne
+    @JoinColumn(name = "service_id")
     private final Service service;
 
     protected Appointment(DayHour dayHour, Service service) {
