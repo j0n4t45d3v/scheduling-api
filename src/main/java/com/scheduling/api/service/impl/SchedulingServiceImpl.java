@@ -9,6 +9,7 @@ import com.scheduling.api.repositories.AppointmentRepository;
 import com.scheduling.api.repositories.ServiceRepository;
 import com.scheduling.api.service.SchedulingService;
 
+@org.springframework.stereotype.Service
 public class SchedulingServiceImpl implements SchedulingService {
 
     private final ServiceRepository serviceRepository;

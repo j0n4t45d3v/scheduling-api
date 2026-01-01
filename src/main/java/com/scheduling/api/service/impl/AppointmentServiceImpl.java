@@ -4,7 +4,9 @@ import com.scheduling.api.domain.Appointment;
 import com.scheduling.api.infra.errors.bussines.NotFoundRecordException;
 import com.scheduling.api.repositories.AppointmentRepository;
 import com.scheduling.api.service.AppointmentService;
+import org.springframework.stereotype.Service;
 
+@Service
 public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
