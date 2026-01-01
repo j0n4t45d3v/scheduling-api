@@ -30,6 +30,10 @@ public class Appointment {
         this.service = service;
     }
 
+    public Long getId() {
+        return this.id;
+    }
+
     public void confirm() {
         if (!this.isPending()) {
             throw new AppointmentCannotBeConfirmedException();
