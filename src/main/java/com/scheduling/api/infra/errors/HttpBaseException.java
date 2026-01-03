@@ -3,7 +3,8 @@ package com.scheduling.api.infra.errors;
 public class HttpBaseException extends RuntimeException {
 
     public enum Status {
-        NOT_FOUND(404);
+        NOT_FOUND(404),
+        CONFLICT(409);
 
         private final int code;
 
