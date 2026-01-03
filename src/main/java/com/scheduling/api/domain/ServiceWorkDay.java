@@ -15,7 +15,7 @@ public class ServiceWorkDay {
     private WeekDays weekDay;
     @ManyToOne
     @JoinColumn(name = "service_id")
-    private Service service;
+    private OfferedService offeredService;
 
     public ServiceWorkDay(WeekDays weekDay) {
         this.weekDay = weekDay;

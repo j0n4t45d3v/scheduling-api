@@ -10,20 +10,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name="tb_services")
-public class Service {
+@Table(name="tb_offered_services")
+public class OfferedService {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
     private String description;
-    @OneToMany(mappedBy = "service", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "offeredService", cascade = CascadeType.REMOVE)
     private final Set<ServiceWorkDay> workDays;
-    @OneToMany(mappedBy = "service", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "offeredService", cascade = CascadeType.REMOVE)
     private final Set<ServiceSchedules> schedules;
 
-    public Service(
+    public OfferedService(
             String name,
             String description,
             Set<ServiceWorkDay> workDays,
@@ -49,8 +49,8 @@ public class Service {
     }
 
 
-    public static ServiceBuilder builder() {
-        return new ServiceBuilder();
+    public static OfferedServiceBuilder builder() {
+        return new OfferedServiceBuilder();
     }
 
     public Appointment schedule(DayHour appointment, DayHour now) {
@@ -82,41 +82,42 @@ public class Service {
     }
 
     public static class ServiceBuilder {
+    public static class OfferedServiceBuilder {
 
         private String name;
         private String description;
         private final Set<ServiceWorkDay> weekDaysWork;
         private final Set<ServiceSchedules> schedulesOfService;
 
-        public ServiceBuilder() {
+        public OfferedServiceBuilder() {
             this.name = null;
             this.description = null;
             this.weekDaysWork =  new HashSet<>();
             this.schedulesOfService = new HashSet<>();
         }
 
-        public ServiceBuilder setName(String name) {
+        public OfferedServiceBuilder setName(String name) {
             this.name = name;
             return this;
         }
 
-        public ServiceBuilder setDescription(String description) {
+        public OfferedServiceBuilder setDescription(String description) {
             this.description = description;
             return this;
         }
 
-        public ServiceBuilder addSchedule(Schedule time) {
+        public OfferedServiceBuilder addSchedule(Schedule time) {
             this.schedulesOfService.add(new ServiceSchedules(time));
             return this;
         }
 
-        public ServiceBuilder addWorkDay(WeekDays weekDays) {
+        public OfferedServiceBuilder addWorkDay(WeekDays weekDays) {
             this.weekDaysWork.add(new ServiceWorkDay(weekDays));
             return this;
         }
 
-        public Service build() {
-            return new Service(this.name, this.description, this.weekDaysWork, this.schedulesOfService);
+        public OfferedService build() {
+            return new OfferedService(this.name, this.description, this.weekDaysWork, this.schedulesOfService);
         }
     }
 

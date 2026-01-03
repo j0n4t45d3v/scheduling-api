@@ -11,11 +11,11 @@ import java.time.LocalTime;
 
 @RestController
 @RequestMapping("/services")
-public class ServiceController {
+public class OfferedServiceController {
 
     private final SchedulingService schedulingService;
 
-    public ServiceController(SchedulingService schedulingService) {
+    public OfferedServiceController(SchedulingService schedulingService) {
         this.schedulingService = schedulingService;
     }
 

@@ -17,7 +17,7 @@ public class ServiceSchedules {
     private final Schedule schedule;
     @ManyToOne
     @JoinColumn(name = "service_id")
-    private Service service;
+    private OfferedService offeredService;
 
     public ServiceSchedules(Schedule schedule) {
         this.schedule = schedule;

@@ -1,14 +1,14 @@
 package com.scheduling.api.service.impl;
 
 import com.scheduling.api.domain.Appointment;
-import com.scheduling.api.domain.Service;
+import com.scheduling.api.domain.OfferedService;
 import com.scheduling.api.domain.dvo.DayHour;
 import com.scheduling.api.domain.dvo.Schedule;
 import com.scheduling.api.domain.enumerates.WeekDays;
 import com.scheduling.api.infra.errors.bussines.NotFoundRecordException;
 import com.scheduling.api.infra.providers.ClockProvider;
 import com.scheduling.api.repositories.AppointmentRepository;
-import com.scheduling.api.repositories.ServiceRepository;
+import com.scheduling.api.repositories.OfferedServiceRepository;
 import com.scheduling.api.stubs.TestClockProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.*;
 class SchedulingServiceImplTest {
 
     @Mock
-    private ServiceRepository repository;
+    private OfferedServiceRepository repository;
     @Mock
     private AppointmentRepository appointmentRepository;
     @Spy
@@ -40,7 +40,7 @@ class SchedulingServiceImplTest {
     @Test
     @DisplayName("should schedule service")
     void shouldScheduleService() {
-        var service = Service.builder()
+        var service = OfferedService.builder()
                 .setName("Test")
                 .setDescription("Test description")
                 .addSchedule(new Schedule(this.clockProvider.currentTime()))

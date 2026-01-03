@@ -14,7 +14,7 @@ import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ServiceTest {
+class OfferedServiceTest {
 
     private static final ClockProvider CLOCK_PROVIDER = TestClockProvider.INSTANCE;
     private static final DayHour NOW = new DayHour(CLOCK_PROVIDER.currentDate(), CLOCK_PROVIDER.currentTime());
@@ -22,7 +22,7 @@ class ServiceTest {
     @Test
     @DisplayName("should allow scheduling service when date passed is not in past")
     void shouldAllowSchedulingServiceWhenDatePassedIsNotInPast() {
-        var service = Service.builder()
+        var service = OfferedService.builder()
                 .setName("Test")
                 .setDescription("Test description")
                 .addSchedule(new Schedule(CLOCK_PROVIDER.currentTime()))
@@ -48,7 +48,7 @@ class ServiceTest {
     @Test
     @DisplayName("should not allow scheduling service when it is in past")
     void shouldAllowSchedulingServiceWhenItIsInPast() {
-        var service = Service.builder()
+        var service = OfferedService.builder()
                 .setName("Test")
                 .setDescription("Test description")
                 .addSchedule(new Schedule(CLOCK_PROVIDER.currentTime()))
@@ -85,7 +85,7 @@ class ServiceTest {
     @Test
     @DisplayName("should not allow scheduling service when it is not available on that weekday")
     void shouldNotAllowSchedulingServiceWhenItIsNotAvailableOnThatWeekDay() {
-        var service = Service.builder()
+        var service = OfferedService.builder()
                 .setName("Test")
                 .setDescription("Test description")
                 .addSchedule(new Schedule(CLOCK_PROVIDER.currentTime()))
@@ -104,7 +104,7 @@ class ServiceTest {
     @Test
     @DisplayName("should not allow scheduling service when it is not available on that hours")
     void shouldNotAllowSchedulingServiceWhenItIsNotAvailableOnThatHours() {
-        var service = Service.builder()
+        var service = OfferedService.builder()
                 .setName("Test")
                 .setDescription("Test description")
                 .addSchedule(new Schedule(CLOCK_PROVIDER.currentTime()))
@@ -130,7 +130,7 @@ class ServiceTest {
     @Test
     @DisplayName("should allow reschedule appointment only when missing at least 4 days to scheduled day")
     void shouldAllowRescheduleAppointmentOnlyWhenMissingAtLeast4DaysToScheduledDay() {
-        var service = Service.builder()
+        var service = OfferedService.builder()
                 .setName("Test")
                 .setDescription("Test description")
                 .addSchedule(new Schedule(CLOCK_PROVIDER.currentTime()))

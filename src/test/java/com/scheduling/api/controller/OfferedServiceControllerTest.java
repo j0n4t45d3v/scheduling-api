@@ -22,8 +22,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ServiceController.class)
-class ServiceControllerTest {
+@WebMvcTest(OfferedServiceController.class)
+class OfferedServiceControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

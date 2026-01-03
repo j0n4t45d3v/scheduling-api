@@ -1,8 +1,8 @@
 package com.scheduling.api.service.impl;
 
+import com.scheduling.api.domain.OfferedService;
 import com.scheduling.api.stubs.TestClockProvider;
 import com.scheduling.api.domain.Appointment;
-import com.scheduling.api.domain.Service;
 import com.scheduling.api.domain.dvo.DayHour;
 import com.scheduling.api.domain.dvo.Schedule;
 import com.scheduling.api.domain.enumerates.WeekDays;
@@ -122,8 +122,8 @@ class AppointmentServiceTest {
                 .schedule(NOW, NOW);
     }
 
-    private Service createService() {
-        return Service.builder()
+    private OfferedService createService() {
+        return OfferedService.builder()
                 .setName("Test")
                 .setDescription("Test description")
                 .addSchedule(new Schedule(CLOCK_PROVIDER.currentTime()))

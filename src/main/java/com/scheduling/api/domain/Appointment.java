@@ -34,13 +34,13 @@ public class Appointment {
     private String reason;
     @ManyToOne
     @JoinColumn(name = "service_id")
-    private final Service service;
+    private final OfferedService offeredService;
 
-    protected Appointment(DayHour dayHour, Service service) {
+    protected Appointment(DayHour dayHour, OfferedService offeredService) {
         this.dayHour = dayHour;
         this.status = Status.PENDING;
         this.reason = null;
-        this.service = service;
+        this.offeredService = offeredService;
     }
 
     public Long getId() {
