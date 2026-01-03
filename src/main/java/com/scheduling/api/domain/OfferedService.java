@@ -4,6 +4,7 @@ import com.scheduling.api.domain.dvo.DayHour;
 import com.scheduling.api.domain.dvo.Schedule;
 import com.scheduling.api.domain.enumerates.WeekDays;
 import com.scheduling.api.domain.exceptions.DomainException;
+import com.scheduling.api.domain.exceptions.offeredservice.OfferedServiceInvalidException;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -30,16 +31,16 @@ public class OfferedService {
             Set<ServiceSchedules> schedules
     ) {
         if (name == null || name.isBlank()) {
-            throw new DomainException("name is required");
+            throw new OfferedServiceInvalidException("name is required");
         }
         if (description == null || description.isBlank()) {
-            throw new DomainException("description is required");
+            throw new OfferedServiceInvalidException("description is required");
         }
         if (workDays == null || workDays.isEmpty()) {
-            throw new DomainException("provider one work day to service");
+            throw new OfferedServiceInvalidException("provider one work day to service");
         }
         if (schedules == null || schedules.isEmpty()) {
-            throw new DomainException("provider one schedule to service");
+            throw new OfferedServiceInvalidException("provider one schedule to service");
         }
 
         this.name = name;
@@ -48,6 +49,21 @@ public class OfferedService {
         this.schedules = Set.copyOf(schedules);
     }
 
+    public Long getId() {
+        return this.id;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public Set<ServiceWorkDay> getWorkDays() {
+        return this.workDays;
+    }
+
+    public Set<ServiceSchedules> getSchedules() {
+        return this.schedules;
+    }
 
     public static OfferedServiceBuilder builder() {
         return new OfferedServiceBuilder();

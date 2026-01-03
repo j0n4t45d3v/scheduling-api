@@ -4,6 +4,7 @@ import com.scheduling.api.domain.dvo.DayHour;
 import com.scheduling.api.domain.dvo.Schedule;
 import com.scheduling.api.domain.enumerates.WeekDays;
 import com.scheduling.api.domain.exceptions.DomainException;
+import com.scheduling.api.domain.exceptions.offeredservice.OfferedServiceInvalidException;
 import com.scheduling.api.infra.providers.ClockProvider;
 import com.scheduling.api.stubs.TestClockProvider;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +19,47 @@ class OfferedServiceTest {
 
     private static final ClockProvider CLOCK_PROVIDER = TestClockProvider.INSTANCE;
     private static final DayHour NOW = new DayHour(CLOCK_PROVIDER.currentDate(), CLOCK_PROVIDER.currentTime());
+
+    @Test
+    @DisplayName("should not allow create service when no name was given")
+    void shouldNotAllowCreateServiceWhenNoNameWasGiven() {
+        var offeredServiceBuilder = OfferedService.builder()
+                .setDescription("Test description")
+                .addSchedule(new Schedule(CLOCK_PROVIDER.currentTime()))
+                .addWorkDay(WeekDays.SUNDAY);
+        assertThrows(OfferedServiceInvalidException.class, offeredServiceBuilder::build);
+    }
+
+    @Test
+    @DisplayName("should not allow create service when no description was given")
+    void shouldNotAllowCreateServiceWhenNoDescriptionWasGiven() {
+        var offeredServiceBuilder = OfferedService.builder()
+                .setName("name")
+                .addSchedule(new Schedule(CLOCK_PROVIDER.currentTime()))
+                .addWorkDay(WeekDays.SUNDAY);
+        assertThrows(OfferedServiceInvalidException.class, offeredServiceBuilder::build);
+    }
+
+    @Test
+    @DisplayName("should not allow create service when no time slot was given")
+    void shouldNotAllowCreateServiceWhenNoTimeSlotWasGiven() {
+        var offeredServiceBuilder = OfferedService.builder()
+                .setName("name")
+                .setDescription("description")
+                .addWorkDay(WeekDays.SUNDAY);
+        assertThrows(OfferedServiceInvalidException.class, offeredServiceBuilder::build);
+    }
+
+    @Test
+    @DisplayName("should not allow create service when no work day was given")
+    void shouldNotAllowCreateServiceWhenNoWorkDayWasGiven() {
+        var offeredServiceBuilder = OfferedService.builder()
+                .setName("name")
+                .setDescription("description")
+                .addSchedule(new Schedule(CLOCK_PROVIDER.currentTime()));
+        assertThrows(OfferedServiceInvalidException.class, offeredServiceBuilder::build);
+    }
+
 
     @Test
     @DisplayName("should allow scheduling service when date passed is not in past")
