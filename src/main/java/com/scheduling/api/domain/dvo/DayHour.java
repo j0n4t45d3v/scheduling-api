@@ -11,7 +11,7 @@ public record DayHour(LocalDate day, LocalTime hour) {
 
     public DayHour {
         if (day == null|| hour == null) {
-            throw new RuntimeException("not provider day/hour");
+            throw new IllegalArgumentException("not provider day/hour");
         }
     }
 
