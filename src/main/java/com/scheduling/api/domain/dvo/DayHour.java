@@ -28,7 +28,8 @@ public record DayHour(LocalDate day, LocalTime hour) {
     }
 
     public boolean hourIsBefore(DayHour other) {
-        return this.hour.isBefore(other.hour());
+        return (this.dayIsBefore(other) || this.day.isEqual(other.day()))
+                && this.hour.isBefore(other.hour());
     }
 
     public boolean isEqualsTo(DayHour dayHour) {
