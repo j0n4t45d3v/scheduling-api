@@ -19,10 +19,12 @@ public class OfferedService {
     private Long id;
     private String name;
     private String description;
-    @OneToMany(mappedBy = "offeredService", cascade = CascadeType.REMOVE)
-    private final Set<ServiceWorkDay> workDays;
-    @OneToMany(mappedBy = "offeredService", cascade = CascadeType.REMOVE)
-    private final Set<ServiceSchedules> schedules;
+    @ElementCollection
+    private Set<ServiceWorkDay> workDays;
+    @ElementCollection
+    private Set<ServiceSchedules> schedules;
+
+    protected OfferedService() {}
 
     public OfferedService(
             String name,

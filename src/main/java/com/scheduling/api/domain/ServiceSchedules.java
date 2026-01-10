@@ -5,19 +5,14 @@ import jakarta.persistence.*;
 
 import java.time.LocalTime;
 
-@Entity
-@Table(name = "tb_services_schedules")
+@Embeddable
 public class ServiceSchedules {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
     @Embedded
     @AttributeOverrides(@AttributeOverride(name = "value", column = @Column(name = "schedule")))
-    private final Schedule schedule;
-    @ManyToOne
-    @JoinColumn(name = "service_id")
-    private OfferedService offeredService;
+    private Schedule schedule;
+
+    protected ServiceSchedules() {}
 
     public ServiceSchedules(Schedule schedule) {
         this.schedule = schedule;

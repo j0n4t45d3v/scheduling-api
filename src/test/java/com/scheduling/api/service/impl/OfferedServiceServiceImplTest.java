@@ -5,8 +5,6 @@ import com.scheduling.api.domain.dvo.Schedule;
 import com.scheduling.api.domain.enumerates.WeekDays;
 import com.scheduling.api.infra.errors.bussines.ConflictRecordException;
 import com.scheduling.api.repositories.OfferedServiceRepository;
-import com.scheduling.api.repositories.ServiceScheduleRepository;
-import com.scheduling.api.repositories.ServiceWorkDayRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,12 +23,6 @@ class OfferedServiceServiceImplTest {
 
     @Mock
     private OfferedServiceRepository repository;
-
-    @Mock
-    private ServiceScheduleRepository serviceScheduleRepository;
-
-    @Mock
-    private ServiceWorkDayRepository serviceWorkDayRepository;
 
     @InjectMocks
     private OfferedServiceServiceImpl offeredServiceService;
@@ -51,8 +43,6 @@ class OfferedServiceServiceImplTest {
 
         verify(this.repository, times(1)).findByName("name");
         verify(this.repository, times(1)).save(same(offeredService));
-        verify(this.serviceWorkDayRepository, times(1)).saveAll(same(offeredService.getWorkDays()));
-        verify(this.serviceScheduleRepository, times(1)).saveAll(same(offeredService.getSchedules()));
     }
 
     @Test
@@ -71,8 +61,6 @@ class OfferedServiceServiceImplTest {
 
         verify(this.repository, times(1)).findByName("name");
         verify(this.repository, never()).save(same(offeredService));
-        verify(this.serviceWorkDayRepository, never()).saveAll(same(offeredService.getWorkDays()));
-        verify(this.serviceScheduleRepository,never()).saveAll(same(offeredService.getSchedules()));
     }
 
 
