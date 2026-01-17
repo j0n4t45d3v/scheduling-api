@@ -1,14 +1,11 @@
 package com.scheduling.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.scheduling.api.domain.Appointment;
 import com.scheduling.api.domain.OfferedService;
-import com.scheduling.api.domain.dvo.DayHour;
 import com.scheduling.api.domain.enumerates.WeekDays;
 import com.scheduling.api.domain.exceptions.DomainException;
 import com.scheduling.api.dto.offeredservice.CreateServiceBody;
 import com.scheduling.api.infra.errors.bussines.ConflictRecordException;
-import com.scheduling.api.infra.errors.bussines.NotFoundRecordException;
 import com.scheduling.api.service.OfferedServiceService;
 import com.scheduling.api.service.SchedulingService;
 import org.junit.jupiter.api.DisplayName;
@@ -19,12 +16,10 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

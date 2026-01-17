@@ -1,13 +1,11 @@
 package com.scheduling.api.domain;
 
 import com.scheduling.api.domain.dvo.DayHour;
-import com.scheduling.api.domain.exceptions.appointment.AppointmentIsNotConfirmedException;
 import com.scheduling.api.domain.exceptions.appointment.AppointmentCannotBeConfirmedException;
 import com.scheduling.api.domain.exceptions.appointment.AppointmentCannotBeRejectedException;
+import com.scheduling.api.domain.exceptions.appointment.AppointmentIsNotConfirmedException;
 import com.scheduling.api.domain.exceptions.appointment.AppointmentReasonIsRequiredException;
 import jakarta.persistence.*;
-
-import java.util.Optional;
 
 @Entity
 @Table(name="tb_appointments")
@@ -18,7 +16,7 @@ public class Appointment {
         CONFIRMED,
         REJECTED,
         RESCHEDULED,
-        CANCELED;
+        CANCELED
     }
 
     @Id
@@ -102,10 +100,6 @@ public class Appointment {
 
     public Status getStatus() {
         return this.status;
-    }
-
-    public Optional<String> getReason() {
-        return Optional.ofNullable(reason);
     }
 
     public DayHour getDayHour() {
