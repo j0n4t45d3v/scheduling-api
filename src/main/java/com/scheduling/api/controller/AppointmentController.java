@@ -1,6 +1,9 @@
 package com.scheduling.api.controller;
 
 import com.scheduling.api.domain.dvo.DayHour;
+import com.scheduling.api.dto.appointment.Reason;
+import com.scheduling.api.dto.appointment.RescheduleBody;
+import com.scheduling.api.dto.appointment.ScheduleBody;
 import com.scheduling.api.service.AppointmentService;
 import com.scheduling.api.service.SchedulingService;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +29,6 @@ public class AppointmentController {
         this.schedulingService = schedulingService;
     }
 
-    public record ScheduleBody(Long service, LocalDate date, LocalTime time){}
     @PostMapping
     public ResponseEntity<Void> schedule(@RequestBody ScheduleBody body) {
         var appointment = this.schedulingService.schedule(body.service(), new DayHour(body.date(), body.time()));
@@ -40,10 +42,9 @@ public class AppointmentController {
                 .build();
     }
 
-    public record RescheduleBody(Long id, LocalDate date, LocalTime time){}
     @PostMapping("/reschedule")
     public ResponseEntity<Void> reschedule(@RequestBody RescheduleBody body) {
-        var rescheduledAppointment = this.schedulingService.reschedule(body.id(), new DayHour(body.date, body.time));
+        var rescheduledAppointment = this.schedulingService.reschedule(body.id(), new DayHour(body.date(), body.time()));
         var location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -61,14 +62,14 @@ public class AppointmentController {
     }
 
     @PutMapping("/{id}/reject")
-    public ResponseEntity<Void> reject(@PathVariable("id") Long id, @RequestBody Map<String, String> body) {
-        this.appointmentService.reject(id, body.get("reject-reason"));
+    public ResponseEntity<Void> reject(@PathVariable("id") Long id, @RequestBody Reason body) {
+        this.appointmentService.reject(id, body.reason());
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}/cancel")
-    public ResponseEntity<Void> cancel(@PathVariable("id") Long id, @RequestBody Map<String, String> body) {
-        this.appointmentService.cancel(id, body.get("cancel-reason"));
+    public ResponseEntity<Void> cancel(@PathVariable("id") Long id, @RequestBody Reason body) {
+        this.appointmentService.cancel(id, body.reason());
         return ResponseEntity.noContent().build();
     }
 

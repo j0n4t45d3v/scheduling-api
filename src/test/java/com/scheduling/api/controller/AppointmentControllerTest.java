@@ -171,7 +171,7 @@ class AppointmentControllerTest {
         this.mockMvc.perform(
                 put("/appointments/{id}/reject", 1)
                         .contentType("application/json")
-                        .content("{\"reject-reason\": \"test reason message\"}")
+                        .content("{\"reason\": \"test reason message\"}")
         ).andExpect(status().isNoContent());
 
         verify(this.appointmentService).reject(1L, "test reason message");
@@ -187,7 +187,7 @@ class AppointmentControllerTest {
         this.mockMvc.perform(
                 put("/appointments/{id}/reject", 1)
                         .contentType("application/json")
-                        .content("{\"reject-reason\": \"test reason message\"}")
+                        .content("{\"reason\": \"test reason message\"}")
         ).andExpect(status().isNotFound());
     }
 
@@ -208,7 +208,7 @@ class AppointmentControllerTest {
         this.mockMvc.perform(
                 put("/appointments/{id}/cancel", 1)
                         .contentType("application/json")
-                        .content("{\"cancel-reason\": \"test reason message\"}")
+                        .content("{\"reason\": \"test reason message\"}")
         ).andExpect(status().isNoContent());
 
         verify(this.appointmentService).cancel(1L, "test reason message");
@@ -224,7 +224,7 @@ class AppointmentControllerTest {
         this.mockMvc.perform(
                 put("/appointments/{id}/cancel", 1)
                         .contentType("application/json")
-                        .content("{\"cancel-reason\": \"test reason message\"}")
+                        .content("{\"reason\": \"test reason message\"}")
         ).andExpect(status().isNotFound());
     }
 
