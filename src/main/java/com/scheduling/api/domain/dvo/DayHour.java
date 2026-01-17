@@ -2,10 +2,12 @@ package com.scheduling.api.domain.dvo;
 
 import com.scheduling.api.domain.enumerates.WeekDays;
 import com.scheduling.api.infra.providers.ClockProvider;
+import org.jspecify.annotations.NonNull;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.chrono.ChronoLocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 public record DayHour(LocalDate day, LocalTime hour) {
@@ -47,4 +49,9 @@ public record DayHour(LocalDate day, LocalTime hour) {
         return Math.abs(diff);
     }
 
+    @Override
+    public @NonNull String toString() {
+        return this.day.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " " +
+                this.hour.format(DateTimeFormatter.ofPattern("hh:mm:ss"));
+    }
 }
