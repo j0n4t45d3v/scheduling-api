@@ -32,8 +32,22 @@ public class AppointmentController {
         var appointment = this.schedulingService.schedule(body.service(), new DayHour(body.date(), body.time()));
         var location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/appointments/{id}")
+                .path("/{id}")
                 .buildAndExpand(appointment.getId())
+                .toUri();
+        return ResponseEntity
+                .created(location)
+                .build();
+    }
+
+    public record RescheduleBody(Long id, LocalDate date, LocalTime time){}
+    @PostMapping("/reschedule")
+    public ResponseEntity<Void> reschedule(@RequestBody RescheduleBody body) {
+        var rescheduledAppointment = this.schedulingService.reschedule(body.id(), new DayHour(body.date, body.time));
+        var location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(rescheduledAppointment.getId())
                 .toUri();
         return ResponseEntity
                 .created(location)

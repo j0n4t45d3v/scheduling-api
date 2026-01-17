@@ -15,9 +15,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -78,5 +81,53 @@ class SchedulingServiceImplTest {
         verify(this.repository, times(1)).findById(anyLong());
         verify(this.appointmentRepository, never()).save(any(Appointment.class));
     }
+
+    @Test
+    @DisplayName("should reschedule service")
+    void shouldRescheduleService() {
+        var service = OfferedService.builder()
+                .setName("Test")
+                .setDescription("Test description")
+                .addSchedule(new Schedule(this.clockProvider.currentTime()))
+                .addWorkDay(WeekDays.SUNDAY)
+                .addWorkDay(WeekDays.MONDAY)
+                .addWorkDay(WeekDays.THURSDAY)
+                .addWorkDay(WeekDays.WEDNESDAY)
+                .addWorkDay(WeekDays.TUESDAY)
+                .addWorkDay(WeekDays.FRIDAY)
+                .addWorkDay(WeekDays.SATURDAY)
+                .build();
+
+        var now = DayHour.now(this.clockProvider);
+        var appointmentMock = Mockito.mock(Appointment.class);
+        LocalDate fixedDate = LocalDate.of(1999, 12, 16);
+        LocalTime fixedTime = LocalTime.of(10, 0);
+
+        when(appointmentMock.getDayHour()).thenReturn(new DayHour(fixedDate, fixedTime));
+        when(appointmentMock.getOfferedService()).thenReturn(service);
+        when(this.appointmentRepository.findById(anyLong())).thenReturn(Optional.of(appointmentMock));
+
+        var appointmentReschedule = this.schedulingService.reschedule(1L, now);
+        assertNotNull(appointmentReschedule);
+        assertTrue(appointmentReschedule.isPending());
+        assertEquals(appointmentMock.getOfferedService(), appointmentReschedule.getOfferedService());
+        assertFalse(appointmentMock.getDayHour().isEqualsTo(appointmentReschedule.getDayHour()));
+
+        verify(this.appointmentRepository, times(1)).findById(anyLong());
+        verify(this.appointmentRepository, times(2)).save(any(Appointment.class));
+    }
+
+    @Test
+    @DisplayName("should throw NotFoundRecordException in reschedule when not found appointment")
+    void shouldThrowNotFoundRecordExceptionInRescheduleWhenNotFoundAppointment() {
+        when(this.appointmentRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        var now = DayHour.now(this.clockProvider);
+        assertThrows(NotFoundRecordException.class, () -> this.schedulingService.reschedule(1L, now));
+
+        verify(this.appointmentRepository, times(1)).findById(anyLong());
+        verify(this.appointmentRepository, never()).save(any(Appointment.class));
+    }
+
 
 }

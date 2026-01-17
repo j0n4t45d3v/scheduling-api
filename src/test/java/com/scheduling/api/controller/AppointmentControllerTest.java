@@ -84,6 +84,55 @@ class AppointmentControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    @DisplayName("should return 201 when rescheduling is done successfully")
+    void shouldReturn201WhenReschedulingIsDoneSuccessfully() throws Exception {
+        Appointment appointmentMock = mock(Appointment.class);
+        when(appointmentMock.getId())
+                .thenReturn(1L);
+        when(this.schedulingService.reschedule(anyLong(), any(DayHour.class)))
+                .thenReturn(appointmentMock);
+        this.mockMvc
+                .perform(post("/appointments/reschedule")
+                        .contentType("application/json")
+                        .content("{\"id\": 1,\"date\":\"1999-12-12\", \"time\":\"11:00\"}"))
+                .andExpect(status().isCreated())
+                .andExpect(MockMvcResultMatchers.header().exists("Location"));
+
+        LocalDate day = LocalDate.of(1999, 12, 12);
+        LocalTime hour = LocalTime.of(11, 0);
+        DayHour appointment = new DayHour(day, hour);
+        verify(this.schedulingService).reschedule(1L, appointment);
+    }
+
+    @Test
+    @DisplayName("should return 404 when not found appointment in reschedule")
+    void shouldReturn404WhenNotFoundAppointmentInReschedule() throws Exception {
+        doThrow(new NotFoundRecordException("fail"))
+                .when(this.schedulingService)
+                .reschedule(anyLong(), any(DayHour.class));
+
+        this.mockMvc
+                .perform(post("/appointments/reschedule")
+                        .contentType("application/json")
+                        .content("{\"id\": 1,\"date\":\"1999-12-12\", \"time\":\"11:00\"}"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("should return 400 when rescheduling violate domain rules")
+    void shouldReturn400WhenReschedulingViolateDomainRules() throws Exception {
+        doThrow(DomainException.class)
+                .when(this.schedulingService)
+                .reschedule(anyLong(), any(DayHour.class));
+
+        this.mockMvc
+                .perform(post("/appointments/reschedule")
+                        .contentType("application/json")
+                        .content("{\"id\": 1,\"date\":\"1999-12-12\", \"time\":\"11:00\"}"))
+                .andExpect(status().isBadRequest());
+    }
+
 
     @Test
     @DisplayName("should return 204 when confirm valid appointment")

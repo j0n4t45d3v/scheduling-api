@@ -71,6 +71,14 @@ public class OfferedService {
         return new OfferedServiceBuilder();
     }
 
+    public Appointment reschedule(Appointment appointment, DayHour newAppointment, DayHour now) {
+        if (now.diffInDays(appointment.getDayHour()) < 4) {
+            throw new DomainException("Appointments can only be rescheduled at least 4 days in advance.");
+        }
+        appointment.reschedule();
+        return this.schedule(newAppointment, now);
+    }
+
     public Appointment schedule(DayHour appointment, DayHour now) {
         if (appointment.isBefore(now)) {
             throw new DomainException("Cannot make an appointment in the past");
@@ -99,7 +107,6 @@ public class OfferedService {
                 .noneMatch(schedules -> schedules.isAvailable(appointment.hour()));
     }
 
-    public static class ServiceBuilder {
     public static class OfferedServiceBuilder {
 
         private String name;

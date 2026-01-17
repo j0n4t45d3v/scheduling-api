@@ -8,6 +8,7 @@ import com.scheduling.api.infra.providers.ClockProvider;
 import com.scheduling.api.repositories.AppointmentRepository;
 import com.scheduling.api.repositories.OfferedServiceRepository;
 import com.scheduling.api.service.SchedulingService;
+import jakarta.transaction.Transactional;
 
 @org.springframework.stereotype.Service
 public class SchedulingServiceImpl implements SchedulingService {
@@ -33,5 +34,17 @@ public class SchedulingServiceImpl implements SchedulingService {
         Appointment doneAppointment = offeredService.schedule(appointment, DayHour.now(this.clockProvider));
         this.appointmentRepository.save(doneAppointment);
         return doneAppointment;
+    }
+
+    @Override
+    @Transactional
+    public Appointment reschedule(Long appointmentId, DayHour newAppointment) {
+        Appointment appointmentFound = this.appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new NotFoundRecordException("appointment not found"));
+        OfferedService offeredService = appointmentFound.getOfferedService();
+        Appointment rescheduleAppointment = offeredService.reschedule(appointmentFound, newAppointment, DayHour.now(this.clockProvider));
+        this.appointmentRepository.save(appointmentFound);
+        this.appointmentRepository.save(rescheduleAppointment);
+        return rescheduleAppointment;
     }
 }

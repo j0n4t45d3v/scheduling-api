@@ -82,6 +82,23 @@ class AppointmentTest {
         assertThrows(AppointmentReasonIsRequiredException.class, () -> appointment.reject(" "), "reason is not be blank");
     }
 
+    @Test
+    @DisplayName("should allow reschedule when it status is confirm")
+    void shouldAllowRescheduleWhenItStatusIsConfirm() {
+        var appointment = this.createValidAppointment();
+        appointment.confirm();
+        appointment.reschedule();
+        assertEquals(Appointment.Status.RESCHEDULED, appointment.getStatus());
+    }
+
+    @Test
+    @DisplayName("should not allow reschedule when it status is not confirmed")
+    void shouldNotAllowRescheduleWhenItStatusIsNotConfirmed() {
+        var appointment = this.createValidAppointment();
+        assertThrows(AppointmentIsNotConfirmedException.class, appointment::reschedule);
+    }
+
+
     private Appointment createValidAppointment() {
         return new Appointment(
                 new DayHour(LocalDate.now(), LocalTime.now(ZoneId.of("UTC")).plusHours(1)),

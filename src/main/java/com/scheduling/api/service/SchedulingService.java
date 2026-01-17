@@ -6,5 +6,6 @@ import com.scheduling.api.domain.dvo.DayHour;
 public interface SchedulingService {
 
     Appointment schedule(Long serviceId, DayHour appointment);
+    Appointment reschedule(Long appointmentId, DayHour newAppointment);
 
 }

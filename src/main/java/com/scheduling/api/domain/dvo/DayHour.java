@@ -44,6 +44,10 @@ public record DayHour(LocalDate day, LocalTime hour) {
         return WeekDays.of(this.day.getDayOfWeek());
     }
 
+    public DayHour minusDays(int daysToSubtract) {
+        return new DayHour(this.day.minusDays(daysToSubtract), this.hour);
+    }
+
     public long diffInDays(DayHour dayHour) {
         long diff = ChronoUnit.DAYS.between(dayHour.day(), this.day);
         return Math.abs(diff);

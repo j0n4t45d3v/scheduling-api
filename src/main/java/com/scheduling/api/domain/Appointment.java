@@ -17,6 +17,7 @@ public class Appointment {
         PENDING,
         CONFIRMED,
         REJECTED,
+        RESCHEDULED,
         CANCELED;
     }
 
@@ -28,13 +29,16 @@ public class Appointment {
             @AttributeOverride(name = "day", column = @Column(name = "day_schedule")),
             @AttributeOverride(name = "hour", column = @Column(name = "hour_schedule")),
     })
-    private final DayHour dayHour;
+    private DayHour dayHour;
     @Enumerated(EnumType.STRING)
     private Status status;
     private String reason;
     @ManyToOne
     @JoinColumn(name = "service_id")
-    private final OfferedService offeredService;
+    private OfferedService offeredService;
+
+    protected Appointment() {
+    }
 
     protected Appointment(DayHour dayHour, OfferedService offeredService) {
         this.dayHour = dayHour;
@@ -73,6 +77,13 @@ public class Appointment {
         this.status = Status.REJECTED;
     }
 
+    public void reschedule() {
+        if (!this.isConfirmed()) {
+            throw new AppointmentIsNotConfirmedException();
+        }
+        this.status = Status.RESCHEDULED;
+    }
+
     public boolean isConfirmed() {
         return this.status.equals(Status.CONFIRMED);
     }
@@ -89,7 +100,19 @@ public class Appointment {
         return this.status.equals(Status.REJECTED);
     }
 
+    public Status getStatus() {
+        return this.status;
+    }
+
     public Optional<String> getReason() {
         return Optional.ofNullable(reason);
+    }
+
+    public DayHour getDayHour() {
+        return dayHour;
+    }
+
+    public OfferedService getOfferedService() {
+        return offeredService;
     }
 }

@@ -187,16 +187,43 @@ class OfferedServiceTest {
                 .addWorkDay(WeekDays.SATURDAY)
                 .build();
 
-        Appointment appointment = new Appointment(NOW, service);
-        Appointment appointmentRescheduled = service.reschedule(appointment, NOW);
-
+        LocalDate dayScheduled = CLOCK_PROVIDER.currentDate().minusDays(4);
+        LocalDate newDayScheduled = CLOCK_PROVIDER.currentDate();
+        LocalTime hourScheduled = CLOCK_PROVIDER.currentTime();
+        Appointment appointment = new Appointment(new DayHour(dayScheduled, hourScheduled), service);
+        appointment.confirm();
+        DayHour newAppointment = new DayHour(newDayScheduled, hourScheduled);
+        Appointment appointmentRescheduled = service.reschedule(appointment, newAppointment, NOW);
         assertNotNull(appointmentRescheduled);
-        assertTrue(appointment.isCanceled());
-        var rescheduleReason = appointment.getReason();
-        assertFalse(appointment.getReason().isEmpty());
-        assertFalse(rescheduleReason.isEmpty());
+        assertEquals(Appointment.Status.RESCHEDULED, appointment.getStatus());
         assertTrue(appointmentRescheduled.isPending());
     }
 
+    @Test
+    @DisplayName("should not allow reschedule appointment when missing at less 4 days to scheduled day")
+    void shouldNotAllowRescheduleAppointmentWhenMissingAtLess4DaysToScheduledDay() {
+        var service = OfferedService.builder()
+                .setName("Test")
+                .setDescription("Test description")
+                .addSchedule(new Schedule(CLOCK_PROVIDER.currentTime()))
+                .addSchedule(new Schedule(CLOCK_PROVIDER.currentTime().plusHours(1)))
+                .addSchedule(new Schedule(CLOCK_PROVIDER.currentTime().plusHours(2)))
+                .addWorkDay(WeekDays.SUNDAY)
+                .addWorkDay(WeekDays.MONDAY)
+                .addWorkDay(WeekDays.THURSDAY)
+                .addWorkDay(WeekDays.WEDNESDAY)
+                .addWorkDay(WeekDays.TUESDAY)
+                .addWorkDay(WeekDays.FRIDAY)
+                .addWorkDay(WeekDays.SATURDAY)
+                .build();
+
+        LocalDate dayScheduled = CLOCK_PROVIDER.currentDate().minusDays(3);
+        LocalDate newDayScheduled = CLOCK_PROVIDER.currentDate();
+        LocalTime hourScheduled = CLOCK_PROVIDER.currentTime();
+        Appointment appointment = new Appointment(new DayHour(dayScheduled, hourScheduled), service);
+        appointment.confirm();
+        DayHour newAppointment = new DayHour(newDayScheduled, hourScheduled);
+        assertThrows(DomainException.class, () -> service.reschedule(appointment, newAppointment, NOW));
+    }
 
 }
