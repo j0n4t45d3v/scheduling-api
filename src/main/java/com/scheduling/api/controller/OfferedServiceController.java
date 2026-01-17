@@ -35,18 +35,6 @@ public class OfferedServiceController {
         }
     }
 
-    @PostMapping("/{id}/appointments")
-    public ResponseEntity<Void> schedule(@PathVariable("id") Long id, @RequestBody ScheduleServiceDTO scheduleServiceDTO) {
-        var appointment = this.schedulingService.schedule(id, scheduleServiceDTO.toDayHour());
-        var location = UriComponentsBuilder
-                .fromPath("/appointments/{id}")
-                .buildAndExpand(appointment.getId())
-                .toUri();
-        return ResponseEntity
-                .created(location)
-                .build();
-    }
-
     public record CreateServiceDTO(String name, String description, Set<WeekDays> workDays, Set<LocalTime> schedules) {
         public OfferedService toDomain() {
             var builder = OfferedService.builder()

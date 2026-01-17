@@ -44,55 +44,6 @@ class OfferedServiceControllerTest {
     private OfferedServiceService offeredServiceService;
 
     @Test
-    @DisplayName("should return 204 when service scheduling is done successfully")
-    void shouldReturn204WhenServiceSchedulingIsDoneSuccessfully() throws Exception {
-        Appointment appointmentMock = mock(Appointment.class);
-        when(appointmentMock.getId())
-                .thenReturn(1L);
-        when(this.schedulingService.schedule(anyLong(), any(DayHour.class)))
-                .thenReturn(appointmentMock);
-        this.mockMvc
-                .perform(post("/services/{id}/appointments", 1)
-                        .contentType("application/json")
-                        .content("{\"day\":\"1999-12-12\", \"hour\":\"11:00\"}"))
-                .andExpect(status().isCreated())
-                .andExpect(MockMvcResultMatchers.header().exists("Location"));
-
-        LocalDate day = LocalDate.of(1999, 12, 12);
-        LocalTime hour = LocalTime.of(11, 0);
-        DayHour appointment = new DayHour(day, hour);
-        verify(this.schedulingService).schedule(1L, appointment);
-    }
-
-    @Test
-    @DisplayName("should return 404 when not found service of the scheduling")
-    void shouldReturn404WhenNotFoundServiceOfTheScheduling() throws Exception {
-        doThrow(new NotFoundRecordException("fail"))
-                .when(this.schedulingService)
-                .schedule(anyLong(), any(DayHour.class));
-
-        this.mockMvc
-                .perform(post("/services/{id}/appointments", 1)
-                        .contentType("application/json")
-                        .content("{\"day\":\"1999-12-12\", \"hour\":\"11:00\"}"))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DisplayName("should return 400 when service scheduling violate domain rules")
-    void shouldReturn400WhenServiceSchedulingViolateDomainRules() throws Exception {
-        doThrow(DomainException.class)
-                .when(this.schedulingService)
-                .schedule(anyLong(), any(DayHour.class));
-
-        this.mockMvc
-                .perform(post("/services/{id}/appointments", 1)
-                        .contentType("application/json")
-                        .content("{\"day\":\"1999-12-12\", \"hour\":\"11:00\"}"))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     @DisplayName("should return 201 when service created it is valid")
     void shouldReturn201WhenServiceCreatedItIsValid() throws Exception {
         var bodyRequest = new OfferedServiceController.CreateServiceDTO(

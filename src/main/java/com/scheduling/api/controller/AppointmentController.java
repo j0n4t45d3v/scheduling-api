@@ -1,9 +1,14 @@
 package com.scheduling.api.controller;
 
+import com.scheduling.api.domain.dvo.DayHour;
 import com.scheduling.api.service.AppointmentService;
+import com.scheduling.api.service.SchedulingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Map;
 
 @RestController
@@ -11,9 +16,28 @@ import java.util.Map;
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
+    private final SchedulingService schedulingService;
 
-    public AppointmentController(AppointmentService appointmentService) {
+    public AppointmentController(
+            AppointmentService appointmentService,
+           SchedulingService schedulingService
+    ) {
         this.appointmentService = appointmentService;
+        this.schedulingService = schedulingService;
+    }
+
+    public record ScheduleBody(Long service, LocalDate date, LocalTime time){}
+    @PostMapping
+    public ResponseEntity<Void> schedule(@RequestBody ScheduleBody body) {
+        var appointment = this.schedulingService.schedule(body.service(), new DayHour(body.date(), body.time()));
+        var location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/appointments/{id}")
+                .buildAndExpand(appointment.getId())
+                .toUri();
+        return ResponseEntity
+                .created(location)
+                .build();
     }
 
     @PutMapping("/{id}/confirm")
