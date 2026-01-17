@@ -21,6 +21,11 @@ spring:
     console:
       enabled: true
       path: /h2
+
 server:
   servlet:
     context-path: /api
+
+springdoc:
+  swagger-ui:
+    path: /doc
