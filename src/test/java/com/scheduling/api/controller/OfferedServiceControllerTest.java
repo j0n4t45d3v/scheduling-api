@@ -6,6 +6,7 @@ import com.scheduling.api.domain.OfferedService;
 import com.scheduling.api.domain.dvo.DayHour;
 import com.scheduling.api.domain.enumerates.WeekDays;
 import com.scheduling.api.domain.exceptions.DomainException;
+import com.scheduling.api.dto.offeredservice.CreateServiceBody;
 import com.scheduling.api.infra.errors.bussines.ConflictRecordException;
 import com.scheduling.api.infra.errors.bussines.NotFoundRecordException;
 import com.scheduling.api.service.OfferedServiceService;
@@ -46,7 +47,7 @@ class OfferedServiceControllerTest {
     @Test
     @DisplayName("should return 201 when service created it is valid")
     void shouldReturn201WhenServiceCreatedItIsValid() throws Exception {
-        var bodyRequest = new OfferedServiceController.CreateServiceDTO(
+        var bodyRequest = new CreateServiceBody(
                 "name",
                 "description",
                 Set.of(WeekDays.SUNDAY),
@@ -67,7 +68,7 @@ class OfferedServiceControllerTest {
     @Test
     @DisplayName("should return 409 when service name is already used")
     void shouldReturn409WhenServiceNameIsAlreadyUsed() throws Exception {
-        var bodyRequest = new OfferedServiceController.CreateServiceDTO(
+        var bodyRequest = new CreateServiceBody(
                 "name",
                 "description",
                 Set.of(WeekDays.SUNDAY),
@@ -85,7 +86,7 @@ class OfferedServiceControllerTest {
     @Test
     @DisplayName("should return 400 when service provided not meet domain rules")
     void shouldReturn400WhenServiceProvidedNotMeetDomainRules() throws Exception{
-        var bodyRequest = new OfferedServiceController.CreateServiceDTO(
+        var bodyRequest = new CreateServiceBody(
                 "name",
                 "description",
                 Set.of(),

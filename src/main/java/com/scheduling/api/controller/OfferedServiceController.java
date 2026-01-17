@@ -4,6 +4,7 @@ import com.scheduling.api.domain.OfferedService;
 import com.scheduling.api.domain.dvo.DayHour;
 import com.scheduling.api.domain.dvo.Schedule;
 import com.scheduling.api.domain.enumerates.WeekDays;
+import com.scheduling.api.dto.offeredservice.CreateServiceBody;
 import com.scheduling.api.service.OfferedServiceService;
 import com.scheduling.api.service.SchedulingService;
 import org.springframework.http.ResponseEntity;
@@ -29,25 +30,8 @@ public class OfferedServiceController {
         this.offeredServiceService = offeredServiceService;
     }
 
-    public record ScheduleServiceDTO(LocalDate day, LocalTime hour) {
-        public DayHour toDayHour() {
-            return new DayHour(day, hour);
-        }
-    }
-
-    public record CreateServiceDTO(String name, String description, Set<WeekDays> workDays, Set<LocalTime> schedules) {
-        public OfferedService toDomain() {
-            var builder = OfferedService.builder()
-                    .setName(name)
-                    .setDescription(description);
-            workDays.forEach(builder::addWorkDay);
-            schedules.forEach(schedule -> builder.addSchedule(new Schedule(schedule)));
-            return builder.build();
-        }
-    }
-
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody CreateServiceDTO createService) {
+    public ResponseEntity<Void> create(@RequestBody CreateServiceBody createService) {
         var offeredServiceCreated = this.offeredServiceService.create(createService.toDomain());
         var location = UriComponentsBuilder
                 .fromPath("/service/{id}")
