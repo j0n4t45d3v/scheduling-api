@@ -100,5 +100,17 @@ class DayHourTest {
         assertFalse(dayHour1.isEqualsTo(dayHour2));
     }
 
+    @Test
+    @DisplayName("should return diff in days")
+    void shouldReturnDiffInDays() {
+        LocalDate day1 = LocalDate.of(1999, 12, 12);
+        LocalDate day2 = LocalDate.of(1999, 12, 13);
+        LocalTime hour = LocalTime.of(1, 30);
+        DayHour dayHour1 = new DayHour(day1, hour);
+        DayHour dayHour2 = new DayHour(day2, hour);
+        assertEquals(1, dayHour1.diffInDays(dayHour2));
+        assertEquals(1, dayHour2.diffInDays(dayHour1));
+    }
+
 
 }

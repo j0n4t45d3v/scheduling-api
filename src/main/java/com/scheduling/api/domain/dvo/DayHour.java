@@ -6,6 +6,7 @@ import com.scheduling.api.infra.providers.ClockProvider;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.chrono.ChronoLocalDate;
+import java.time.temporal.ChronoUnit;
 
 public record DayHour(LocalDate day, LocalTime hour) {
 
@@ -39,6 +40,11 @@ public record DayHour(LocalDate day, LocalTime hour) {
 
     public WeekDays getDayOfWeek() {
         return WeekDays.of(this.day.getDayOfWeek());
+    }
+
+    public long diffInDays(DayHour dayHour) {
+        long diff = ChronoUnit.DAYS.between(dayHour.day(), this.day);
+        return Math.abs(diff);
     }
 
 }
